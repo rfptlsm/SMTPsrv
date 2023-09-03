@@ -4,24 +4,23 @@ import sys, getopt
 import glob
 
 
-def main(argv):
+def mailbox(argv, port=465, address='addresslist.txt', letter='letter.txt', attachment=None):
     try:
-        opts, args = getopt.getopt(argv, "he:p:", ["email=", "pass="])
+        opts, args = getopt.getopt(argv, "he:p:s:P:a:l:f:", ['email=', 'password=', 'server=', 'port=', 'address=', 'leter=', 'files=', 'help'])
     except getopt.GetoptError:
-        print("-e --email <email>\n-p --pass <password>\n \
-                -h --host\n-P --port (default: 465)\n-a --address (default: addresslist.txt)\n \
-                -l --letter (default: letter.txt)\n-f --files <attachment>")
+        print("-e --email <email>\n-p --pass <password>\n-s --server <smtp server>\n-P --port (default: 465)\n-a --address (default: addresslist.txt)\n-l --letter (default: letter.txt)\n-f --files <attachment>")
         sys.exit(2)
+    
     for opt, arg in opts:
-        if opt == "-h":
-            print("-e --email <email>\n-p --pass <password>\n-h --host\n-P --port (default: 465)\n-a --address (default: addresslist.txt)\n-l --letter (default: letter.txt)\n-f --files <attachment>")
+        if opt in ("-h", "--help"):
+            print("-e --email <email>\n-p --pass <password>\n-s --server <smtp server>\n-P --port (default: 465)\n-a --address (default: addresslist.txt)\n-l --letter (default: letter.txt)\n-f --files <attachment>")
             sys.exit()
         elif opt in ("-e", "--email"):
             mail = arg
         elif opt in ("-p", "--pass"):
             password = arg
-        elif opt in ("-h", "--host"):
-            host = arg
+        elif opt in ("-s", "--server"):
+            server = arg
         elif opt in ("-P", "--port"):
             port = arg
         elif opt in ("-a", "--address"):
@@ -30,10 +29,7 @@ def main(argv):
             letter = arg
         elif opt in ("-f", "--files"):
             attachment = arg
-    return mail, password #, host, port, address, letter, attachment
 
-def mailbox(mail, password, host, port=465, address='addresslist.txt', letter='letter.txt', attachment=None):
-    
     with open(address) as f:
         to_send = f.readlines()
 
@@ -56,10 +52,10 @@ def mailbox(mail, password, host, port=465, address='addresslist.txt', letter='l
                 data_name = f.name
                 msg.add_attachment(data_file, maintype='application', subtype='octet-stream', filename=data_name)
 
-    with smtplib.SMTP_SSL(host, port) as smtp:
+    with smtplib.SMTP_SSL(server, port) as smtp:
         smtp.ehlo()
         smtp.login(mail, password)
         smtp.send_message(msg)
 
 if __name__ == "__main__":
-    print (main(sys.argv[1:]))
+    mailbox(sys.argv[1:])
