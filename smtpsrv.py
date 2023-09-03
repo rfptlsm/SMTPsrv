@@ -33,7 +33,7 @@ def mailbox(argv, port=465, address='addresslist.txt', letter='letter.txt', atta
     with open(address) as f:
         to_send = f.readlines()
 
-    with open(letter) as f:
+    with open(letter, encoding="utf-8") as f:
         title_msg = f.readline()
         title_msg.strip('\n')
         body_msg = f.read()
