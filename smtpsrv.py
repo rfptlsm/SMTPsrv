@@ -39,9 +39,10 @@ def mailbox(argv, port=465, address='addresslist.txt', letter='letter.txt', atta
         body_msg = f.read()
 
     msg = EmailMessage()
-    msg["Subject"] = title_msg
     msg["From"] = mail
-    msg["To"] = to_send  # ', '.join(to_send)
+    msg["To"] = mail     #', '.join(to_send)
+    msg["Bcc"] = to_send    #", ".join(to_send)
+    msg["Subject"] = title_msg
     msg.set_content(body_msg)
 
     if(attachment != None):

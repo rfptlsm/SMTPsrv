@@ -1,5 +1,8 @@
 .vscode
 venv
+build/
+dist/
+smtpsrv.spec
 .DS_Store
 test.py
 addresslist.txt
